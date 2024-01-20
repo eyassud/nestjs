@@ -6,6 +6,8 @@ import {
   Body,
   Put,
   Delete,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { PostService } from './post.service';
@@ -13,6 +15,10 @@ import { User as UserModel, Post as PostModel } from '@prisma/client';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { PostDto } from '../models/post';
 import { UserDto } from '../models/userDto';
+import { AuthGuard } from '@nestjs/passport';
+import { LocalAuthGuard } from './local-auth.guard';
+import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @ApiTags('posts')
 @Controller()
@@ -20,7 +26,21 @@ export class AppController {
   constructor(
     private readonly userService: UserService,
     private readonly postService: PostService,
+    private readonly authService: AuthService,
   ) { }
+
+  @UseGuards(LocalAuthGuard)
+  @Post('auth/login')
+  async login(@Request() req) {
+    console.log(`User is: ${JSON.stringify(req.user)}`);
+    return this.authService.login(req.user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
+  }
 
   @Get('post/:id')
   async getPostById(@Param('id') id: string): Promise<PostModel> {

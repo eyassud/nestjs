@@ -19,7 +19,7 @@ async function bootstrap() {
     .setTitle('Posts example')
     .setDescription('The Posts API description')
     .setVersion('1.0')
-    .addTag('posts')
+    .addTag('posts').addBasicAuth()
     .build();
   const options: SwaggerDocumentOptions = {
     operationIdFactory: (

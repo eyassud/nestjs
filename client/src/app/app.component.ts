@@ -11,12 +11,12 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnInit {
-  title = 'client';
+  title = 'NextJS Client';
 
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
-    this.http.get<any>('http://localhost:4200/api/user/1/posts')
+    this.http.get<any>('http://localhost:4200/api/user/2/posts')
       .subscribe(data => {
         console.log(data); // Response from the NestJS API
       });
