@@ -24,8 +24,9 @@ export class AuthService {
         const payload = { username: user.username, sub: user.userId };
         console.log(`Payload is: ${JSON.stringify(payload)}`);
         console.log(`Access token is: ${process.env.JWT_SECRET}`);
+
         return {
-            access_token: this.jwtService.sign(payload, { secret: process.env.JWT_SECRET }),
+            access_token: this.jwtService.sign(payload),
         };
     }
 }
