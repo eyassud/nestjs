@@ -15,10 +15,11 @@ import { User as UserModel, Post as PostModel } from '@prisma/client';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { PostDto } from '../models/post';
 import { UserDto } from '../models/userDto';
-import { AuthGuard } from '@nestjs/passport';
 import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { JwtService } from '@nestjs/jwt';
+import * as moment from 'moment-timezone'; // For local datetime formatting
 
 @ApiTags('posts')
 @Controller()
@@ -27,6 +28,7 @@ export class AppController {
     private readonly userService: UserService,
     private readonly postService: PostService,
     private readonly authService: AuthService,
+    private readonly jwtService: JwtService,
   ) { }
 
   @UseGuards(LocalAuthGuard)
@@ -40,6 +42,12 @@ export class AppController {
   @Get('profile')
   getProfile(@Request() req) {
     console.log(`Profile User is: ${JSON.stringify(req.user)}`);
+    const token = req.headers.authorization.split(' ')[1];
+    const decoded = this.jwtService.decode(token);
+    const expiration = decoded.exp;
+    const localExpiration = moment.unix(expiration).tz(moment.tz.guess());
+    console.log('Token expires at:', localExpiration.format('YYYY-MM-DD HH:mm:ss'));
+
     return req.user;
   }
 

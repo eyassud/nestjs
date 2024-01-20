@@ -7,6 +7,7 @@ import { PrismaService } from './prisma-service.service';
 import { UserService } from './user.service';
 import { PostService } from './post.service';
 import { AuthModule } from './auth.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [AuthModule],
@@ -16,6 +17,7 @@ import { AuthModule } from './auth.module';
     PrismaService,
     UserService,
     PostService,
+    JwtService
   ],
 })
 export class AppModule implements NestModule {
