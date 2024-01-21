@@ -7,7 +7,8 @@ import {
   Put,
   Delete,
   Request,
-  UseGuards,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { PostService } from './post.service';
@@ -15,11 +16,10 @@ import { User as UserModel, Post as PostModel } from '@prisma/client';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { PostDto } from '../models/post';
 import { UserDto } from '../models/userDto';
-import { LocalAuthGuard } from './local-auth.guard';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './jwt-auth.guard';
 import { JwtService } from '@nestjs/jwt';
 import * as moment from 'moment-timezone'; // For local datetime formatting
+import { SkipAuth } from './skip-auth';
 
 @ApiTags('posts')
 @Controller()
@@ -31,14 +31,14 @@ export class AppController {
     private readonly jwtService: JwtService,
   ) { }
 
-  @UseGuards(LocalAuthGuard)
+
+  @SkipAuth()
+  @HttpCode(HttpStatus.OK)
   @Post('auth/login')
-  async login(@Request() req) {
-    console.log(`User is: ${JSON.stringify(req.user)}`);
-    return this.authService.login(req.user);
+  async login(@Body() signInDto: Record<string, any>) {
+    return this.authService.login(signInDto.username, signInDto.password);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
     console.log(`Profile User is: ${JSON.stringify(req.user)}`);
