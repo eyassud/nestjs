@@ -1,0 +1,53 @@
+{
+  "name": "google-oauth2",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "google-oauth2/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/google-oauth2",
+        "main": "google-oauth2/src/main.ts",
+        "tsConfig": "google-oauth2/tsconfig.app.json",
+        "assets": ["google-oauth2/src/assets"],
+        "webpackConfig": "google-oauth2/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {}
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "google-oauth2:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "google-oauth2:build:development"
+        },
+        "production": {
+          "buildTarget": "google-oauth2:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "google-oauth2/jest.config.ts"
+      }
+    }
+  },
+  "tags": []
+}
